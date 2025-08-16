@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+      /* Custom slider styles */
+      .slider {
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #3b82f6;
+        cursor: pointer;
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .slider::-moz-range-thumb {
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #3b82f6;
+        cursor: pointer;
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .slider::-webkit-slider-track {
+        background: linear-gradient(
+          to right,
+          #3b82f6 0%,
+          #3b82f6 var(--progress, 0%),
+          #e5e7eb var(--progress, 0%),
+          #e5e7eb 100%
+        );
+        height: 4px;
+        border-radius: 2px;
+      }
+
+      .slider::-moz-range-track {
+        background: #e5e7eb;
+        height: 4px;
+        border-radius: 2px;
+      }
+
+      .slider::-moz-range-progress {
+        background: #3b82f6;
+        height: 4px;
+        border-radius: 2px;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .scale-hover:hover {
+        transform: scale(1.05);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-200 min-h-screen">
+    <!-- Desktop Navigation -->
+    <header
+      class="hidden sm:flex items-center justify-between py-3 px-6 bg-gray-800 text-gray-300 fixed top-0 w-full right-0 left-0 z-50 shadow-lg"
+    >
+      <a
+        href="#"
+        onclick="showPage('home')"
+        class="flex items-center hover:text-white transition-colors duration-200"
+        aria-label="Home"
+      >
+        <i data-lucide="home" class="w-7 h-7"></i>
+      </a>
+
+      <nav
+        class="flex items-center gap-2 p-2 rounded-2xl bg-gray-900/80 backdrop-blur-sm"
+      >
+        <a
+          href="#"
+          onclick="showPage('music')"
+          class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
+          data-page="music"
+          >Music</a
+        >
+        <a
+          href="#"
+          onclick="showPage('music')"
+          class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
+          data-page="music"
+          >Music</a
+        >
+        <a
+          href="#"
+          onclick="showPage('poetry')"
+          class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
+          data-page="poetry"
+          >Poetry</a
+        >
+        <a
+          href="#"
+          onclick="showPage('journal')"
+          class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
+          data-page="journal"
+          >Journal</a
+        >
+        <a
+          href="#"
+          onclick="showPage('school')"
+          class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
+          data-page="school"
+          >School</a
+        >
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <i data-lucide="user" class="w-5 h-5"></i>
+        <span class="font-semibold">User</span>
+      </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <header
+      class="sm:hidden flex items-center justify-between py-3 px-4 bg-gray-800 text-gray-300 fixed top-0 w-full z-50 shadow-lg"
+    >
+      <a
+        href="#"
+        onclick="showPage('home')"
+        class="flex items-center"
+        aria-label="Home"
+      >
+        <i data-lucide="home" class="w-6 h-6"></i>
+      </a>
+
+      <nav
+        class="flex items-center justify-between gap-1 p-2 rounded-2xl bg-gray-300 w-64"
+      >
+        <a
+          href="#"
+          onclick="showPage('music')"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          data-page="music"
+        >
+          <i data-lucide="music" class="w-6 h-6"></i>
+        </a>
+        <a
+          href="#"
+          onclick="showPage('poetry')"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          data-page="poetry"
+        >
+          <i data-lucide="pen-tool" class="w-6 h-6"></i>
+        </a>
+        <a
+          href="#"
+          onclick="showPage('journal')"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          data-page="journal"
+        >
+          <i data-lucide="book-open" class="w-6 h-6"></i>
+        </a>
+        <a
+          href="#"
+          onclick="showPage('school')"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          data-page="school"
+        >
+          <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+        </a>
+        <a
+          href="#"
+          onclick="showPage('home')"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          data-page="home"
+        >
+          <i data-lucide="home" class="w-7 h-7"></i>
+        </a>
+      </nav>
+
+      <div class="flex items-center gap-1">
+        <i data-lucide="user" class="w-4 h-4"></i>
+        <span class="font-semibold text-sm">User</span>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16 sm:pt-20 px-4 sm:px-6 pb-8">
+      <!-- Home Page -->
+      <div id="home-page" class="page max-w-6xl mx-auto">
+        <div class="mb-8 fade-in">
+          <h1
+            class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2"
+            id="greeting"
+          >
+            Good day, User 👋
+          </h1>
+          <p class="text-gray-600">Welcome back to your personal dashboard</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 fade-in">
+          <div class="bg-white rounded-xl p-4 shadow-sm">
+            <div class="flex items-center gap-2">
+              <i data-lucide="book-open" class="text-blue-500 w-5 h-5"></i>
+              <div>
+                <p class="text-sm text-gray-600">Journal</p>
+                <p class="font-semibold" id="journal-count">0 entries</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-4 shadow-sm">
+            <div class="flex items-center gap-2">
+              <i data-lucide="pen-tool" class="text-green-500 w-5 h-5"></i>
+              <div>
+                <p class="text-sm text-gray-600">Poetry</p>
+                <p class="font-semibold" id="poems-count">0 poems</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-4 shadow-sm">
+            <div class="flex items-center gap-2">
+              <i data-lucide="github" class="text-gray-700 w-5 h-5"></i>
+              <div>
+                <p class="text-sm text-gray-600">Repos</p>
+                <p class="font-semibold" id="repos-count">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl p-4 shadow-sm">
+            <div class="flex items-center gap-2">
+              <i data-lucide="file-text" class="text-orange-500 w-5 h-5"></i>
+              <div>
+                <p class="text-sm text-gray-600">Notion</p>
+                <p class="font-semibold">3 pages</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Shortcuts -->
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in"
+        >
+          <a
+            href="#"
+            onclick="showPage('music')"
+            class="bg-purple-600 hover:bg-purple-500 text-white rounded-2xl p-6 flex flex-col items-center text-center scale-hover transition-all duration-200 shadow-lg group"
+          >
+            <i
+              data-lucide="music"
+              class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform"
+            ></i>
+            <span class="text-xl font-semibold mb-1">Music</span>
+            <span class="text-sm opacity-90"
+              >Stream from Apple Music & YouTube</span
+            >
+          </a>
+
+          <a
+            href="#"
+            onclick="showPage('journal')"
+            class="bg-blue-600 hover:bg-blue-500 text-white rounded-2xl p-6 flex flex-col items-center text-center scale-hover transition-all duration-200 shadow-lg group"
+          >
+            <i
+              data-lucide="book-open"
+              class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform"
+            ></i>
+            <span class="text-xl font-semibold mb-1">Journal</span>
+            <span class="text-sm opacity-90" id="journal-shortcut-count"
+              >0 entries</span
+            >
+          </a>
+
+          <a
+            href="#"
+            onclick="showPage('poetry')"
+            class="bg-green-600 hover:bg-green-500 text-white rounded-2xl p-6 flex flex-col items-center text-center scale-hover transition-all duration-200 shadow-lg group"
+          >
+            <i
+              data-lucide="pen-tool"
+              class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform"
+            ></i>
+            <span class="text-xl font-semibold mb-1">Poetry</span>
+            <span class="text-sm opacity-90" id="poems-shortcut-count"
+              >0 poems</span
+            >
+          </a>
+
+          <a
+            href="#"
+            onclick="showPage('school')"
+            class="bg-orange-600 hover:bg-orange-500 text-white rounded-2xl p-6 flex flex-col items-center text-center scale-hover transition-all duration-200 shadow-lg group"
+          >
+            <i
+              data-lucide="graduation-cap"
+              class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform"
+            ></i>
+            <span class="text-xl font-semibold mb-1">School</span>
+            <span class="text-sm opacity-90">Notion integration</span>
+          </a>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 fade-in">
+          <!-- Recent Journal Entries -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm">
+            <div class="flex items-center gap-2 mb-4">
+              <i data-lucide="book-open" class="text-blue-500 w-6 h-6"></i>
+              <h2 class="text-xl font-semibold">Recent Journal Entries</h2>
+            </div>
+            <div id="recent-journal-entries" class="space-y-3">
+              <p class="text-gray-500 text-center py-4">
+                No journal entries yet
+              </p>
+            </div>
+            <a
+              href="#"
+              onclick="showPage('journal')"
+              class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm font-medium mt-4"
+            >
+              View all entries →
+            </a>
+          </div>
+
+          <!-- GitHub Repositories -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm">
+            <div class="flex items-center gap-2 mb-4">
+              <i data-lucide="github" class="text-gray-700 w-6 h-6"></i>
+              <h2 class="text-xl font-semibold">Recent Repositories</h2>
+            </div>
+            <div id="github-repos" class="space-y-3">
+              <div class="text-center py-4">
+                <div
+                  class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"
+                ></div>
+                <p class="text-gray-500 mt-2">Loading repositories...</p>
+              </div>
+            </div>
+            <a
+              href="https://github.com/octocat"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm font-medium mt-4"
+            >
+              View GitHub profile →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Music Page -->
+      <div id="music-page" class="page max-w-4xl mx-auto hidden">
+        <div class="mb-8 fade-in">
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">Music</h1>
+          <p class="text-gray-600">Stream from Apple Music and YouTube Music</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Now Playing -->
+          <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm fade-in">
+            <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
+              <img
+                id="current-artwork"
+                src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop"
+                alt="Album artwork"
+                class="w-48 h-48 rounded-2xl shadow-lg"
+              />
+              <div class="text-center sm:text-left">
+                <h2
+                  id="current-title"
+                  class="text-2xl font-bold text-gray-800 mb-2"
+                >
+                  Blinding Lights
+                </h2>
+                <p id="current-artist" class="text-xl text-gray-600 mb-1">
+                  The Weeknd
+                </p>
+                <p id="current-album" class="text-gray-500">After Hours</p>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mb-6">
+              <input
+                type="range"
+                id="progress-slider"
+                min="0"
+                max="100"
+                value="0"
+                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+              />
+              <div class="flex justify-between text-sm text-gray-500 mt-1">
+                <span id="current-time">0:00</span>
+                <span id="total-time">3:22</span>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center justify-center gap-4 mb-6">
+              <button
+                class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <i data-lucide="shuffle" class="text-gray-600 w-5 h-5"></i>
+              </button>
+              <button
+                onclick="previousTrack()"
+                class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <i data-lucide="skip-back" class="text-gray-700 w-6 h-6"></i>
+              </button>
+              <button
+                onclick="togglePlayPause()"
+                id="play-pause-btn"
+                class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full transition-colors"
+              >
+                <i data-lucide="play" class="w-6 h-6"></i>
+              </button>
+              <button
+                onclick="nextTrack()"
+                class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <i data-lucide="skip-forward" class="text-gray-700 w-6 h-6"></i>
+              </button>
+              <button
+                class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <i data-lucide="repeat" class="text-gray-600 w-5 h-5"></i>
+              </button>
+            </div>
+
+            <!-- Volume -->
+            <div class="flex items-center gap-3">
+              <i data-lucide="volume-2" class="text-gray-600 w-5 h-5"></i>
+              <input
+                type="range"
+                id="volume-slider"
+                min="0"
+                max="100"
+                value="75"
+                class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+              />
+              <span
+                id="volume-display"
+                class="text-sm text-gray-600 min-w-[3rem]"
+                >75%</span
+              >
+            </div>
+          </div>
+
+          <!-- Playlist -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm fade-in">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Up Next</h3>
+            <div id="playlist" class="space-y-3">
+              <!-- Playlist items will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Integration Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 fade-in">
+          <div
+            class="bg-gradient-to-br from-pink-500 to-purple-600 text-white rounded-2xl p-6"
+          >
+            <h3 class="text-xl font-semibold mb-2">Apple Music</h3>
+            <p class="text-pink-100 mb-4">
+              Access your Apple Music library and playlists
+            </p>
+            <button
+              class="bg-white text-purple-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+            >
+              Connect Apple Music
+            </button>
+          </div>
+
+          <div
+            class="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-2xl p-6"
+          >
+            <h3 class="text-xl font-semibold mb-2">YouTube Music</h3>
+            <p class="text-red-100 mb-4">
+              Stream from YouTube Music's vast catalog
+            </p>
+            <button
+              class="bg-white text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+            >
+              Connect YouTube Music
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journal Page -->
+      <div id="journal-page" class="page max-w-4xl mx-auto hidden">
+        <div class="mb-8 fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-800 mb-2">Journal</h1>
+              <p class="text-gray-600">Capture your thoughts and memories</p>
+            </div>
+            <button
+              onclick="showNewEntryModal()"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            >
+              <i data-lucide="plus" class="w-5 h-5"></i>
+              New Entry
+            </button>
+          </div>
+
+          <!-- Search -->
+          <div class="relative">
+            <i
+              data-lucide="search"
+              class="absolute left-3 top-3 text-gray-400 w-5 h-5"
+            ></i>
+            <input
+              type="text"
+              id="journal-search"
+              placeholder="Search entries..."
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        <!-- Entries -->
+        <div id="journal-entries" class="space-y-6 fade-in">
+          <div class="text-center py-12">
+            <i
+              data-lucide="book-open"
+              class="mx-auto text-gray-400 mb-4 w-12 h-12"
+            ></i>
+            <h3 class="text-lg font-medium text-gray-600 mb-2">
+              No journal entries yet
+            </h3>
+            <p class="text-gray-500">
+              Start writing your first entry to capture your thoughts
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Poetry Page -->
+      <div id="poetry-page" class="page max-w-4xl mx-auto hidden">
+        <div class="mb-8 fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h1 class="text-3xl font-bold text-gray-800 mb-2">Poetry</h1>
+              <p class="text-gray-600">Express yourself through verse</p>
+            </div>
+            <button
+              onclick="showNewPoemModal()"
+              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            >
+              <i data-lucide="plus" class="w-5 h-5"></i>
+              New Poem
+            </button>
+          </div>
+
+          <!-- Search -->
+          <div class="relative">
+            <i
+              data-lucide="search"
+              class="absolute left-3 top-3 text-gray-400 w-5 h-5"
+            ></i>
+            <input
+              type="text"
+              id="poetry-search"
+              placeholder="Search poems..."
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+
+        <!-- Poems -->
+        <div id="poetry-entries" class="space-y-6 fade-in">
+          <div class="text-center py-12">
+            <i
+              data-lucide="pen-tool"
+              class="mx-auto text-gray-400 mb-4 w-12 h-12"
+            ></i>
+            <h3 class="text-lg font-medium text-gray-600 mb-2">No poems yet</h3>
+            <p class="text-gray-500">
+              Start writing your first poem to express your creativity
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- School Page -->
+      <div id="school-page" class="page max-w-6xl mx-auto hidden">
+        <div class="mb-8 fade-in">
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">School</h1>
+          <p class="text-gray-600">
+            Manage your academic resources and assignments
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Notion Integration -->
+          <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm fade-in">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div class="bg-gray-900 p-2 rounded-lg">
+                  <i data-lucide="file-text" class="text-white w-6 h-6"></i>
+                </div>
+                <div>
+                  <h2 class="text-xl font-semibold text-gray-800">
+                    Notion Pages
+                  </h2>
+                  <p class="text-gray-600 text-sm">
+                    Your study materials and notes
+                  </p>
+                </div>
+              </div>
+              <button
+                onclick="fetchNotionPages()"
+                class="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                Refresh
+              </button>
+            </div>
+
+            <div id="notion-pages" class="space-y-3">
+              <!-- Notion pages will be populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Assignments -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm fade-in">
+            <div class="flex items-center gap-2 mb-6">
+              <i data-lucide="calendar" class="text-orange-500 w-6 h-6"></i>
+              <h2 class="text-xl font-semibold text-gray-800">Assignments</h2>
+            </div>
+
+            <div id="assignments" class="space-y-3">
+              <!-- Assignments will be populated by JavaScript -->
+            </div>
+
+            <button
+              class="w-full mt-4 bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg transition-colors"
+            >
+              Add Assignment
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 fade-in">
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-gray-900 text-white p-4 rounded-lg hover:bg-gray-800 transition-colors text-center"
+          >
+            <i data-lucide="github" class="mx-auto mb-2 w-6 h-6"></i>
+            <span class="text-sm font-medium">GitHub</span>
+          </a>
+
+          <a
+            href="https://notion.so"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-gray-100 text-gray-800 p-4 rounded-lg hover:bg-gray-200 transition-colors text-center"
+          >
+            <i data-lucide="file-text" class="mx-auto mb-2 w-6 h-6"></i>
+            <span class="text-sm font-medium">Notion</span>
+          </a>
+
+          <a
+            href="https://calendar.google.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition-colors text-center"
+          >
+            <i data-lucide="calendar" class="mx-auto mb-2 w-6 h-6"></i>
+            <span class="text-sm font-medium">Calendar</span>
+          </a>
+
+          <a
+            href="https://drive.google.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-colors text-center"
+          >
+            <i data-lucide="file-text" class="mx-auto mb-2 w-6 h-6"></i>
+            <span class="text-sm font-medium">Drive</span>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="py-6 text-center text-gray-600 bg-gray-100 border-t border-gray-300"
+    >
+      <p>&copy; 2025 Personal Dashboard. All rights reserved.</p>
+    </footer>
+
+    <!-- Modals -->
+    <!-- New Journal Entry Modal -->
+    <div
+      id="journal-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden"
+    >
+      <div
+        class="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <h2 class="text-xl font-semibold mb-4">New Journal Entry</h2>
+        <form id="journal-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Title</label
+            >
+            <input
+              type="text"
+              id="journal-title"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter a title for your entry..."
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Mood</label
+            >
+            <div class="flex gap-2" id="mood-selector">
+              <button
+                type="button"
+                class="mood-btn p-2 text-2xl rounded-lg transition-colors hover:bg-gray-100"
+                data-mood="😊"
+              >
+                😊
+              </button>
+              <button
+                type="button"
+                class="mood-btn p-2 text-2xl rounded-lg transition-colors hover:bg-gray-100"
+                data-mood="😢"
+              >
+                😢
+              </button>
+              <button
+                type="button"
+                class="mood-btn p-2 text-2xl rounded-lg transition-colors hover:bg-gray-100"
+                data-mood="😴"
+              >
+                😴
+              </button>
+              <button
+                type="button"
+                class="mood-btn p-2 text-2xl rounded-lg transition-colors hover:bg-gray-100"
+                data-mood="😡"
+              >
+                😡
+              </button>
+              <button
+                type="button"
+                class="mood-btn p-2 text-2xl rounded-lg transition-colors hover:bg-gray-100"
+                data-mood="😍"
+              >
+                😍
+              </button>
+              <button
+                type="button"
+                class="mood-btn p-2 text-2xl rounded-lg transition-colors hover:bg-gray-100"
+                data-mood="🤔"
+              >
+                🤔
+              </button>
+              <button
+                type="button"
+                class="mood-btn p-2 text-2xl rounded-lg transition-colors hover:bg-gray-100"
+                data-mood="😎"
+              >
+                😎
+              </button>
+              <button
+                type="button"
+                class="mood-btn p-2 text-2xl rounded-lg transition-colors hover:bg-gray-100"
+                data-mood="🥺"
+              >
+                🥺
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Content</label
+            >
+            <textarea
+              id="journal-content"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-48 resize-none"
+              placeholder="Write your thoughts..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="flex justify-end gap-3">
+            <button
+              type="button"
+              onclick="hideJournalModal()"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              Save Entry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- New Poem Modal -->
+    <div
+      id="poem-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden"
+    >
+      <div
+        class="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <h2 class="text-xl font-semibold mb-4">New Poem</h2>
+        <form id="poem-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Title</label
+            >
+            <input
+              type="text"
+              id="poem-title"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Enter a title for your poem..."
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Tags</label
+            >
+            <div class="flex gap-2 mb-2">
+              <input
+                type="text"
+                id="poem-tag-input"
+                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                placeholder="Add a tag..."
+              />
+              <button
+                type="button"
+                onclick="addPoemTag()"
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Add
+              </button>
+            </div>
+            <div id="poem-tags" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Poem</label
+            >
+            <textarea
+              id="poem-content"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent h-64 resize-none font-mono"
+              placeholder="Write your poem here..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="flex justify-end gap-3">
+            <button
+              type="button"
+              onclick="hidePoemModal()"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              Save Poem
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="/src/app.js"></script>
+  </body>
+</html>
