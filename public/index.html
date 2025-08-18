@@ -77,83 +77,87 @@
       .scale-hover:hover {
         transform: scale(1.05);
       }
-
-      .hidden {
-        display: none !important;
-      }
     </style>
   </head>
   <body class="bg-gray-200 min-h-screen">
-    <!-- Desktop Navigation -->
+    <!-- 🌍 Desktop Header -->
     <header
-      class="hidden sm:flex items-center justify-between py-3 px-6 bg-gray-800 text-gray-300 fixed top-0 w-full right-0 left-0 z-50 shadow-lg"
+      class="hidden sm:flex items-center justify-between py-3 px-6 bg-gray-300/50 text-gray-200 fixed top-0 w-full z-50 shadow-lg backdrop-blur-md"
     >
-      <a
-        href="#"
-        onclick="showPage('home')"
-        class="flex items-center hover:text-white transition-colors duration-200"
-        aria-label="Home"
-      >
-        <i data-lucide="home" class="w-7 h-7"></i>
-      </a>
+      <!-- Left Spacer -->
+      <div></div>
 
+      <!-- Center Nav -->
       <nav
-        class="flex items-center gap-2 p-2 rounded-2xl bg-gray-900/80 backdrop-blur-sm"
+        class="flex items-center gap-2 px-3 py-1 rounded-2xl bg-gray-500/80 backdrop-blur-sm shadow-md"
       >
         <a
           href="#"
           onclick="showPage('music')"
           class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
           data-page="music"
-          >Music</a
         >
-        <a
-          href="#"
-          onclick="showPage('music')"
-          class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
-          data-page="music"
-          >Music</a
-        >
+          Music
+        </a>
+
         <a
           href="#"
           onclick="showPage('poetry')"
           class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
           data-page="poetry"
-          >Poetry</a
         >
+          Poetry
+        </a>
+
+        <a
+          href="#"
+          onclick="showPage('home')"
+          class="flex items-center px-4 py-2 rounded-xl font-semibold transition-all duration-200 bg-gray-700 text-white hover:bg-gray-600"
+          aria-label="Home"
+          data-page="home"
+        >
+          <i data-lucide="home" class="w-5 h-5 mr-1"></i> Home
+        </a>
+
         <a
           href="#"
           onclick="showPage('journal')"
           class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
           data-page="journal"
-          >Journal</a
         >
+          Journal
+        </a>
+
         <a
           href="#"
           onclick="showPage('school')"
           class="nav-link px-4 py-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
           data-page="school"
-          >School</a
         >
+          School
+        </a>
       </nav>
 
-      <div class="flex items-center gap-2">
-        <i data-lucide="user" class="w-5 h-5"></i>
+      <!-- Right Side User -->
+      <div
+        class="flex items-center gap-2 px-3 py-1 rounded-xl bg-gray-500/70 backdrop-blur-sm shadow"
+      >
+        <i data-lucide="user" class="w-5 h-5 text-gray-300"></i>
         <span class="font-semibold">User</span>
       </div>
     </header>
 
-    <!-- Mobile Navigation -->
+    <!-- 📱 Mobile Header -->
     <header
-      class="sm:hidden flex items-center justify-center py-3 px-4 bg-gray-800 text-gray-300 fixed top-0 w-full z-50 shadow-lg"
+      class="sm:hidden flex items-center justify-center py-3 px-4 bg-gray-900/95 text-gray-200 fixed top-0 w-full z-50 shadow-lg backdrop-blur-md"
     >
       <nav
-        class="flex items-center justify-center gap-1 p-2 rounded-2xl bg-gray-300 w-64"
+        class="flex items-center justify-center gap-2 p-2 rounded-2xl bg-gray-800/80 backdrop-blur-sm shadow-md"
       >
         <a
           href="#"
           onclick="showPage('music')"
-          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-400 hover:bg-gray-700 hover:text-white"
           data-page="music"
         >
           <i data-lucide="music" class="w-6 h-6"></i>
@@ -161,7 +165,7 @@
         <a
           href="#"
           onclick="showPage('poetry')"
-          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-400 hover:bg-gray-700 hover:text-white"
           data-page="poetry"
         >
           <i data-lucide="pen-tool" class="w-6 h-6"></i>
@@ -169,15 +173,15 @@
         <a
           href="#"
           onclick="showPage('home')"
-          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 bg-gray-700 text-white"
           data-page="home"
         >
-          <i data-lucide="home" class="w-8 h-8"></i>
+          <i data-lucide="home" class="w-7 h-7"></i>
         </a>
         <a
           href="#"
           onclick="showPage('journal')"
-          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-400 hover:bg-gray-700 hover:text-white"
           data-page="journal"
         >
           <i data-lucide="book-open" class="w-6 h-6"></i>
@@ -185,7 +189,7 @@
         <a
           href="#"
           onclick="showPage('school')"
-          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-200"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-400 hover:bg-gray-700 hover:text-white"
           data-page="school"
         >
           <i data-lucide="graduation-cap" class="w-6 h-6"></i>
@@ -194,7 +198,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="pt-32 sm:pt-20 px-4 sm:px-6 pb-8">
+    <main class="pt-32 px-4 sm:px-6 pb-8">
       <!-- Home Page -->
       <div id="home-page" class="page max-w-6xl mx-auto">
         <div class="mb-8 fade-in">
