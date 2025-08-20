@@ -226,18 +226,18 @@ function updateStats() {
   );
   if (journalEntries.length === 0) {
     recentJournalContainer.innerHTML =
-      '<p class="text-gray-500 text-center py-4">No journal entries yet</p>';
+      '<p class="text-gray-400 text-center py-8">No journal entries yet</p>';
   } else {
     recentJournalContainer.innerHTML = journalEntries
       .slice(0, 3)
       .map(
         (entry) => `
-            <div class="p-3 bg-gray-50 rounded-lg">
-                <h3 class="font-medium text-gray-800 mb-1">${entry.title}</h3>
-                <p class="text-gray-600 text-sm line-clamp-2">${
+            <div class="p-4 bg-dark-800/30 rounded-2xl border border-gray-600/30 hover:bg-dark-700/50 transition-all duration-300">
+                <h3 class="font-bold text-white mb-2">${entry.title}</h3>
+                <p class="text-gray-300 text-sm line-clamp-2">${
                   entry.content
                 }</p>
-                <p class="text-xs text-gray-500 mt-2">${formatDate(
+                <p class="text-xs text-gray-400 mt-3">${formatDate(
                   entry.date
                 )}</p>
             </div>
@@ -278,19 +278,21 @@ function showPage(page) {
 function updateNavigation(activePage) {
   // Desktop navigation
   document.querySelectorAll(".nav-link").forEach((link) => {
-    link.classList.remove("bg-gray-800", "text-white");
+    link.classList.remove("bg-blue-600/30", "text-blue-400", "glow-effect");
+    link.classList.add("text-gray-400");
     if (link.dataset.page === activePage) {
-      link.classList.add("bg-gray-800", "text-white");
+      link.classList.remove("text-gray-400");
+      link.classList.add("bg-blue-600/30", "text-blue-400", "glow-effect");
     }
   });
 
   // Mobile navigation
   document.querySelectorAll(".mobile-nav-link").forEach((link) => {
-    link.classList.remove("bg-gray-700", "text-white");
-    link.classList.add("text-gray-400");
+    link.classList.remove("bg-blue-600/30", "text-blue-400");
+    link.classList.add("text-gray-500");
     if (link.dataset.page === activePage) {
-      link.classList.remove("text-gray-400");
-      link.classList.add("bg-gray-700", "text-white");
+      link.classList.remove("text-gray-500");
+      link.classList.add("bg-blue-600/30", "text-blue-400");
     }
   });
 }
@@ -349,24 +351,26 @@ function renderPlaylist() {
   playlistContainer.innerHTML = playlist
     .map(
       (track, index) => `
-        <div onclick="selectTrack(${index})" class="p-3 rounded-lg cursor-pointer transition-colors ${
+        <div onclick="selectTrack(${index})" class="p-4 rounded-2xl cursor-pointer transition-all duration-300 ${
         index === currentTrack
-          ? "bg-blue-50 border border-blue-200"
-          : "hover:bg-gray-50"
+          ? "bg-blue-600/20 border border-blue-600/50 glow-effect"
+          : "hover:bg-white/5 border border-transparent"
       }">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-4">
                 <img src="${track.artwork}" alt="${
         track.album
-      }" class="w-12 h-12 rounded-lg">
+      }" class="w-14 h-14 rounded-xl shadow-lg">
                 <div class="flex-1 min-w-0">
-                    <h4 class="font-medium text-gray-800 truncate">${
+                    <h4 class="font-bold text-white truncate">${
                       track.title
                     }</h4>
-                    <p class="text-sm text-gray-600 truncate">${
+                    <p class="text-sm text-gray-400 truncate">${
                       track.artist
                     }</p>
                 </div>
-                <span class="text-sm text-gray-500">${track.duration}</span>
+                <span class="text-sm text-gray-400 font-medium">${
+                  track.duration
+                }</span>
             </div>
         </div>
     `
@@ -444,9 +448,9 @@ function renderJournalEntries() {
 
   if (filteredEntries.length === 0) {
     container.innerHTML = `
-            <div class="text-center py-12">
-                <i data-lucide="book-open" class="mx-auto text-gray-400 mb-4 w-12 h-12"></i>
-                <h3 class="text-lg font-medium text-gray-600 mb-2">
+            <div class="text-center py-16">
+                <i data-lucide="book-open" class="mx-auto text-gray-500 mb-6 w-16 h-16"></i>
+                <h3 class="text-2xl font-medium text-gray-400 mb-3">
                     ${
                       searchTerm ? "No entries found" : "No journal entries yet"
                     }
@@ -464,32 +468,32 @@ function renderJournalEntries() {
     container.innerHTML = filteredEntries
       .map(
         (entry) => `
-            <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow fade-in">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center gap-3">
+            <div class="card-dark rounded-3xl p-8 hover-glow transition-all duration-300 fade-in">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-4">
                         <span class="text-2xl">${entry.mood}</span>
                         <div>
-                            <h3 class="font-semibold text-gray-800 text-lg">${
+                            <h3 class="font-bold text-white text-xl">${
                               entry.title
                             }</h3>
-                            <div class="flex items-center gap-2 text-sm text-gray-500">
-                                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                            <div class="flex items-center gap-2 text-sm text-gray-400">
+                                <i data-lucide="calendar" class="w-4 h-4"></i>
                                 ${formatDate(entry.date)}
                             </div>
                         </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button class="p-1 text-gray-400 hover:text-blue-600 transition-colors">
-                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                    <div class="flex gap-3">
+                        <button class="p-2 text-gray-400 hover:text-blue-400 transition-colors bg-blue-600/10 rounded-lg">
+                            <i data-lucide="edit-3" class="w-5 h-5"></i>
                         </button>
                         <button onclick="deleteJournalEntry('${
                           entry.id
-                        }')" class="p-1 text-gray-400 hover:text-red-600 transition-colors">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        }')" class="p-2 text-gray-400 hover:text-red-400 transition-colors bg-red-600/10 rounded-lg">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
                         </button>
                     </div>
                 </div>
-                <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">${
+                <p class="text-gray-300 leading-relaxed whitespace-pre-wrap text-lg">${
                   entry.content
                 }</p>
             </div>
@@ -543,9 +547,9 @@ function renderPoemTags() {
   container.innerHTML = currentTags
     .map(
       (tag) => `
-        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-md text-sm flex items-center gap-1">
+        <span class="bg-green-600/20 text-green-400 px-3 py-2 rounded-lg text-sm flex items-center gap-2 border border-green-600/30">
             ${tag}
-            <button type="button" onclick="removePoemTag('${tag}')" class="text-green-600 hover:text-green-800">×</button>
+            <button type="button" onclick="removePoemTag('${tag}')" class="text-green-400 hover:text-green-300 font-bold">×</button>
         </span>
     `
     )
@@ -567,9 +571,9 @@ function renderPoems() {
 
   if (filteredPoems.length === 0) {
     container.innerHTML = `
-            <div class="text-center py-12">
-                <i data-lucide="pen-tool" class="mx-auto text-gray-400 mb-4 w-12 h-12"></i>
-                <h3 class="text-lg font-medium text-gray-600 mb-2">
+            <div class="text-center py-16">
+                <i data-lucide="pen-tool" class="mx-auto text-gray-500 mb-6 w-16 h-16"></i>
+                <h3 class="text-2xl font-medium text-gray-400 mb-3">
                     ${searchTerm ? "No poems found" : "No poems yet"}
                 </h3>
                 <p class="text-gray-500">
@@ -585,24 +589,24 @@ function renderPoems() {
     container.innerHTML = filteredPoems
       .map(
         (poem) => `
-            <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow fade-in">
-                <div class="flex items-start justify-between mb-3">
+            <div class="card-dark rounded-3xl p-8 hover-glow transition-all duration-300 fade-in">
+                <div class="flex items-start justify-between mb-4">
                     <div>
-                        <h3 class="font-semibold text-gray-800 text-lg mb-1">${
+                        <h3 class="font-bold text-white text-xl mb-2">${
                           poem.title
                         }</h3>
-                        <p class="text-sm text-gray-500 mb-2">${formatDate(
+                        <p class="text-sm text-gray-400 mb-3">${formatDate(
                           poem.date
                         )}</p>
                         ${
                           poem.tags.length > 0
                             ? `
-                            <div class="flex flex-wrap gap-1">
+                            <div class="flex flex-wrap gap-2">
                                 ${poem.tags
                                   .map(
                                     (tag) => `
-                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded-md text-xs flex items-center gap-1">
-                                        <i data-lucide="tag" class="w-2.5 h-2.5"></i>
+                                    <span class="bg-green-600/20 text-green-400 px-3 py-1 rounded-lg text-xs flex items-center gap-1 border border-green-600/30">
+                                        <i data-lucide="tag" class="w-3 h-3"></i>
                                         ${tag}
                                     </span>
                                 `
@@ -613,19 +617,19 @@ function renderPoems() {
                             : ""
                         }
                     </div>
-                    <div class="flex gap-2">
-                        <button class="p-1 text-gray-400 hover:text-green-600 transition-colors">
-                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                    <div class="flex gap-3">
+                        <button class="p-2 text-gray-400 hover:text-green-400 transition-colors bg-green-600/10 rounded-lg">
+                            <i data-lucide="edit-3" class="w-5 h-5"></i>
                         </button>
                         <button onclick="deletePoem('${
                           poem.id
-                        }')" class="p-1 text-gray-400 hover:text-red-600 transition-colors">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        }')" class="p-2 text-gray-400 hover:text-red-400 transition-colors bg-red-600/10 rounded-lg">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
                         </button>
                     </div>
                 </div>
                 <div class="prose prose-sm max-w-none">
-                    <pre class="whitespace-pre-wrap font-serif text-gray-700 leading-relaxed">${
+                    <pre class="whitespace-pre-wrap font-serif text-gray-300 leading-relaxed text-lg">${
                       poem.content
                     }</pre>
                 </div>
@@ -653,34 +657,34 @@ function renderAssignments() {
   container.innerHTML = assignments
     .map(
       (assignment) => `
-        <div class="p-3 rounded-lg border ${
+        <div class="p-4 rounded-xl border transition-all duration-300 ${
           assignment.completed
-            ? "bg-green-50 border-green-200"
-            : "bg-white border-gray-200"
+            ? "bg-green-600/10 border-green-600/30 hover:bg-green-600/20"
+            : "bg-dark-800/30 border-gray-600/30 hover:bg-dark-700/50"
         }">
-            <div class="flex items-start justify-between mb-2">
+            <div class="flex items-start justify-between mb-3">
                 <h3 class="${
                   assignment.completed
-                    ? "text-green-800 line-through"
-                    : "text-gray-800"
-                } font-medium">
+                    ? "text-green-400 line-through"
+                    : "text-white"
+                } font-bold text-lg">
                     ${assignment.title}
                 </h3>
-                <span class="px-2 py-1 rounded text-xs ${getPriorityColor(
+                <span class="px-3 py-1 rounded-lg text-xs font-medium ${getPriorityColor(
                   assignment.priority
                 )}">
                     ${assignment.priority}
                 </span>
             </div>
             
-            <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center justify-between">
                 <span class="${
                   assignment.completed ? "text-green-600" : "text-gray-600"
-                } font-medium">
+                } font-medium text-sm">
                     ${assignment.subject}
                 </span>
-                <div class="flex items-center gap-1 text-gray-500">
-                    <i data-lucide="clock" class="w-3 h-3"></i>
+                <div class="flex items-center gap-2 text-gray-400 text-sm">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
                     ${formatDate(assignment.dueDate, true)}
                 </div>
             </div>
@@ -697,11 +701,11 @@ function renderNotionPages() {
 
   if (notionPages.length === 0) {
     container.innerHTML = `
-      <div class="text-center py-8">
-        <i data-lucide="file-text" class="mx-auto text-gray-400 mb-4 w-12 h-12"></i>
-        <h3 class="text-lg font-medium text-gray-600 mb-2">No Notion pages found</h3>
-        <p class="text-gray-500 mb-4">Configure your Notion integration to see your pages here</p>
-        <button onclick="showNotionSetup()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+      <div class="text-center py-12">
+        <i data-lucide="file-text" class="mx-auto text-gray-500 mb-6 w-16 h-16"></i>
+        <h3 class="text-xl font-medium text-gray-400 mb-3">No Notion pages found</h3>
+        <p class="text-gray-500 mb-6">Configure your Notion integration to see your pages here</p>
+        <button onclick="showNotionSetup()" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white px-6 py-3 rounded-xl transition-all duration-300">
           Setup Notion
         </button>
       </div>
@@ -714,29 +718,29 @@ function renderNotionPages() {
           (page) => `
           <a href="${getNotionPageUrl(
             page
-          )}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
-            <div class="flex items-center gap-3">
+          )}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-5 bg-dark-800/30 hover:bg-dark-700/50 rounded-2xl transition-all duration-300 group border border-gray-600/30">
+            <div class="flex items-center gap-4">
                 <span class="text-2xl">${getNotionPageIcon(page)}</span>
                 <div>
-                    <h3 class="font-medium text-gray-800">${getNotionPageTitle(
+                    <h3 class="font-bold text-white">${getNotionPageTitle(
                       page
                     )}</h3>
-                    <p class="text-sm text-gray-500">Last edited ${formatDate(
+                    <p class="text-sm text-gray-400">Last edited ${formatDate(
                       page.last_edited_time
                     )}</p>
                 </div>
             </div>
-            <i data-lucide="external-link" class="text-gray-400 group-hover:text-gray-600 transition-colors w-4.5 h-4.5"></i>
+            <i data-lucide="external-link" class="text-gray-400 group-hover:text-blue-400 transition-colors w-5 h-5"></i>
           </a>
       `
         )
         .join("") +
       `
-        <div class="border-t border-gray-200 pt-4 mt-6">
-            <a href="https://notion.so" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium">
-                <i data-lucide="file-text" class="w-4 h-4"></i>
+        <div class="border-t border-gray-600/30 pt-6 mt-6">
+            <a href="https://notion.so" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium transition-colors">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
                 Open Notion Workspace
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                <i data-lucide="external-link" class="w-4 h-4"></i>
             </a>
         </div>
     `;
@@ -770,9 +774,9 @@ function updateGitHubUI() {
 
   if (githubRepos.length === 0) {
     container.innerHTML = `
-      <div class="text-center py-4">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-        <p class="text-gray-500 mt-2">Loading repositories...</p>
+      <div class="text-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto"></div>
+        <p class="text-gray-400 mt-2">Loading repositories...</p>
       </div>
     `;
   } else {
@@ -780,16 +784,21 @@ function updateGitHubUI() {
       .slice(0, 3)
       .map(
         (repo) => `
-            <div class="p-3 bg-gray-50 rounded-lg">
+            <div class="p-5 bg-dark-800/30 rounded-2xl border border-gray-600/30 hover:bg-dark-700/50 transition-all duration-300">
                 <div class="flex items-start justify-between">
                     <div>
-                        <h3 class="font-medium text-gray-800">${repo.name}</h3>
-                        <p class="text-gray-600 text-sm">${
+                        <h3 class="font-bold text-white text-lg mb-2">${
+                          repo.name
+                        }</h3>
+                        <p class="text-gray-300 text-sm mb-3">${
                           repo.description || "No description"
                         }</p>
-                        <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                        <div class="flex items-center gap-4 text-sm text-gray-400">
                             <span>${repo.language || "Unknown"}</span>
-                            <span>★ ${repo.stargazers_count}</span>
+                            <span class="flex items-center gap-1">
+                                <i data-lucide="star" class="w-3 h-3"></i>
+                                ${repo.stargazers_count}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -811,10 +820,10 @@ async function fetchGitHubRepos() {
 function showGitHubError() {
   const container = document.getElementById("github-repos");
   container.innerHTML = `
-    <div class="text-center py-4">
-      <p class="text-red-600 mb-2">Failed to load repositories</p>
-      <p class="text-gray-500 text-sm mb-3">Check your GitHub configuration</p>
-      <button onclick="fetchGitHubRepos()" class="text-blue-600 hover:text-blue-700 text-sm">Try again</button>
+    <div class="text-center py-8">
+      <p class="text-red-400 mb-2 font-medium">Failed to load repositories</p>
+      <p class="text-gray-400 text-sm mb-4">Check your GitHub configuration</p>
+      <button onclick="fetchGitHubRepos()" class="text-blue-400 hover:text-blue-300 text-sm bg-blue-600/20 px-4 py-2 rounded-lg transition-colors">Try again</button>
     </div>
   `;
 }
@@ -822,11 +831,11 @@ function showGitHubError() {
 function showNotionError() {
   const container = document.getElementById("notion-pages");
   container.innerHTML = `
-    <div class="text-center py-8">
-      <i data-lucide="alert-circle" class="mx-auto text-red-400 mb-4 w-12 h-12"></i>
-      <h3 class="text-lg font-medium text-red-600 mb-2">Notion Connection Failed</h3>
-      <p class="text-gray-500 mb-4">Check your Notion integration token</p>
-      <button onclick="fetchNotionPages()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+    <div class="text-center py-12">
+      <i data-lucide="alert-circle" class="mx-auto text-red-400 mb-6 w-16 h-16"></i>
+      <h3 class="text-xl font-medium text-red-400 mb-3">Notion Connection Failed</h3>
+      <p class="text-gray-400 mb-6">Check your Notion integration token</p>
+      <button onclick="fetchNotionPages()" class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white px-6 py-3 rounded-xl transition-all duration-300">
         Retry Connection
       </button>
     </div>
@@ -837,11 +846,11 @@ function showNotionError() {
 function showNotionSetupMessage() {
   const container = document.getElementById("notion-pages");
   container.innerHTML = `
-    <div class="text-center py-8">
-      <i data-lucide="settings" class="mx-auto text-gray-400 mb-4 w-12 h-12"></i>
-      <h3 class="text-lg font-medium text-gray-600 mb-2">Notion Not Configured</h3>
-      <p class="text-gray-500 mb-4">Add your Notion integration token to see your pages</p>
-      <button onclick="showNotionSetup()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+    <div class="text-center py-12">
+      <i data-lucide="settings" class="mx-auto text-gray-500 mb-6 w-16 h-16"></i>
+      <h3 class="text-xl font-medium text-gray-400 mb-3">Notion Not Configured</h3>
+      <p class="text-gray-400 mb-6">Add your Notion integration token to see your pages</p>
+      <button onclick="showNotionSetup()" class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white px-6 py-3 rounded-xl transition-all duration-300">
         Setup Guide
       </button>
     </div>
@@ -1005,9 +1014,9 @@ function setupEventListeners() {
 // Utility functions
 function updateMoodSelector() {
   document.querySelectorAll(".mood-btn").forEach((btn) => {
-    btn.classList.remove("bg-blue-100", "border-2", "border-blue-500");
+    btn.classList.remove("bg-blue-600/30", "border-blue-500", "glow-effect");
     if (btn.dataset.mood === currentMood) {
-      btn.classList.add("bg-blue-100", "border-2", "border-blue-500");
+      btn.classList.add("bg-blue-600/30", "border-blue-500", "glow-effect");
     }
   });
 }
@@ -1044,12 +1053,12 @@ function formatDate(dateString, shortFormat = false) {
 function getPriorityColor(priority) {
   switch (priority) {
     case "high":
-      return "bg-red-100 text-red-800";
+      return "bg-red-600/20 text-red-400 border border-red-600/30";
     case "medium":
-      return "bg-yellow-100 text-yellow-800";
+      return "bg-yellow-600/20 text-yellow-400 border border-yellow-600/30";
     case "low":
-      return "bg-green-100 text-green-800";
+      return "bg-green-600/20 text-green-400 border border-green-600/30";
     default:
-      return "bg-gray-100 text-gray-800";
+      return "bg-gray-600/20 text-gray-400 border border-gray-600/30";
   }
 }

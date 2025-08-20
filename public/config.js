@@ -1,39 +1,32 @@
 // Configuration for API integrations
-const CONFIG = {
-  // GitHub Configuration
+// Replace these with your actual API keys and tokens
+
+window.CONFIG = {
   github: {
-    username: "octocat", // Change this to your GitHub username
-    token: "", // Optional: Add your GitHub personal access token for higher rate limits
+    username: "octocat", // Replace with your GitHub username
+    token: "", // Optional: GitHub personal access token for higher rate limits
   },
 
-  // Notion Configuration
   notion: {
-    token: "", // Add your Notion integration token
-    databaseId: "", // Add your Notion database ID for pages
+    token: "", // Your Notion integration token
+    databaseId: "", // Optional: specific database ID
   },
 
-  // Spotify Configuration (Web API)
   spotify: {
-    clientId: "", // Add your Spotify client ID
-    clientSecret: "", // Add your Spotify client secret
-    redirectUri: window.location.origin + "/callback",
+    clientId: "", // Your Spotify app client ID
+    clientSecret: "", // Your Spotify app client secret
   },
 
-  // Apple Music Configuration (MusicKit JS)
   appleMusic: {
-    developerToken: "", // Add your Apple Music developer token
+    developerToken: "", // Your Apple Music developer token
     appName: "Personal Dashboard",
   },
 
-  // YouTube Music (unofficial API)
-  youtubeMusic: {
-    enabled: false, // Set to true when you have API access
+  lastfm: {
+    apiKey: "", // Your Last.fm API key
+    username: "", // Your Last.fm username
   },
 };
 
-// Export for use in other files
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = CONFIG;
-} else {
-  window.CONFIG = CONFIG;
-}
+// Development mode - set to false in production
+window.CONFIG.isDevelopment = true;
