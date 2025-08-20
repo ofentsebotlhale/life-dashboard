@@ -6,9 +6,11 @@ let currentTrack = 0;
 let isPlaying = false;
 let currentMood = "😊";
 let currentTags = [];
+let musicService = null; // Will hold Spotify or Apple Music instance
+let currentPlaylist = [];
 
-// Mock playlist data
-const playlist = [
+// Default playlist data (will be replaced by real data)
+let playlist = [
   {
     id: "1",
     title: "Blinding Lights",
@@ -38,8 +40,8 @@ const playlist = [
   },
 ];
 
-// Mock assignments data
-const assignments = [
+// Default assignments data
+let assignments = [
   {
     id: "1",
     title: "Computer Science Project",
@@ -66,30 +68,10 @@ const assignments = [
   },
 ];
 
-// Mock Notion pages
-const notionPages = [
-  {
-    id: "1",
-    title: "Computer Science Notes",
-    url: "https://notion.so/cs-notes",
-    last_edited_time: new Date().toISOString(),
-    icon: "💻",
-  },
-  {
-    id: "2",
-    title: "Math Formulas",
-    url: "https://notion.so/math-formulas",
-    last_edited_time: new Date(Date.now() - 86400000).toISOString(),
-    icon: "📐",
-  },
-  {
-    id: "3",
-    title: "Project Ideas",
-    url: "https://notion.so/project-ideas",
-    last_edited_time: new Date(Date.now() - 172800000).toISOString(),
-    icon: "💡",
-  },
-];
+// Will be populated by API
+let notionPages = [];
+let githubRepos = [];
+let githubUser = null;
 
 // Initialize app
 document.addEventListener("DOMContentLoaded", function () {
@@ -98,10 +80,117 @@ document.addEventListener("DOMContentLoaded", function () {
   updateStats();
   renderPlaylist();
   renderAssignments();
-  renderNotionPages();
   setupEventListeners();
+  initializeAPIs();
   showPage("home");
 });
+
+// Initialize API connections
+async function initializeAPIs() {
+  try {
+    // Initialize GitHub
+    await initializeGitHub();
+
+    // Initialize Notion
+    await initializeNotion();
+
+    // Initialize Music Services
+    await initializeMusicServices();
+  } catch (error) {
+    console.error("Error initializing APIs:", error);
+  }
+}
+
+async function initializeGitHub() {
+  try {
+    const repos = await window.apiManager.fetchGitHubRepos();
+    githubRepos = repos;
+
+    const user = await window.apiManager.fetchGitHubUser();
+    githubUser = user;
+
+    updateGitHubUI();
+  } catch (error) {
+    console.error("GitHub initialization failed:", error);
+    showGitHubError();
+  }
+}
+
+async function initializeNotion() {
+  try {
+    if (window.CONFIG.notion.token) {
+      const pages = await window.apiManager.fetchNotionPages();
+      notionPages = pages;
+      renderNotionPages();
+    } else {
+      showNotionSetupMessage();
+    }
+  } catch (error) {
+    console.error("Notion initialization failed:", error);
+    showNotionError();
+  }
+}
+
+async function initializeMusicServices() {
+  try {
+    // Try Spotify first
+    if (window.CONFIG.spotify.clientId) {
+      await initializeSpotify();
+    }
+    // Try Apple Music if Spotify fails
+    else if (window.CONFIG.appleMusic.developerToken) {
+      await initializeAppleMusic();
+    } else {
+      showMusicSetupMessage();
+    }
+  } catch (error) {
+    console.error("Music service initialization failed:", error);
+    showMusicError();
+  }
+}
+
+async function initializeSpotify() {
+  try {
+    // For demo purposes, search for popular tracks
+    const tracks = await window.apiManager.searchSpotifyTracks(
+      "top hits 2024",
+      10
+    );
+
+    playlist = tracks.map((track) => ({
+      id: track.id,
+      title: track.name,
+      artist: track.artists[0].name,
+      album: track.album.name,
+      duration: formatDuration(track.duration_ms),
+      artwork:
+        track.album.images[0]?.url ||
+        "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop",
+      preview_url: track.preview_url,
+    }));
+
+    renderPlaylist();
+    updateCurrentTrack();
+    musicService = "spotify";
+  } catch (error) {
+    console.error("Spotify initialization failed:", error);
+    throw error;
+  }
+}
+
+async function initializeAppleMusic() {
+  try {
+    const musicKit = await window.apiManager.initializeAppleMusic();
+    musicService = musicKit;
+
+    // Load some sample tracks
+    // This would typically load user's library or recommendations
+    console.log("Apple Music initialized successfully");
+  } catch (error) {
+    console.error("Apple Music initialization failed:", error);
+    throw error;
+  }
+}
 
 // Set greeting based on time
 function setGreeting() {
@@ -126,6 +215,10 @@ function updateStats() {
   document.getElementById(
     "poems-shortcut-count"
   ).textContent = `${poems.length} poems`;
+
+  // Update repo count
+  document.getElementById("repos-count").textContent =
+    githubRepos.length.toString();
 
   // Update recent journal entries
   const recentJournalContainer = document.getElementById(
@@ -177,7 +270,7 @@ function showPage(page) {
   } else if (page === "school") {
     fetchGitHubRepos();
   } else if (page === "home") {
-    fetchGitHubRepos();
+    updateGitHubUI();
   }
 }
 
@@ -185,33 +278,45 @@ function showPage(page) {
 function updateNavigation(activePage) {
   // Desktop navigation
   document.querySelectorAll(".nav-link").forEach((link) => {
-    link.classList.remove("bg-blue-600", "text-white", "shadow-lg");
+    link.classList.remove("bg-gray-800", "text-white");
     if (link.dataset.page === activePage) {
-      link.classList.add("bg-blue-600", "text-white", "shadow-lg");
+      link.classList.add("bg-gray-800", "text-white");
     }
   });
 
   // Mobile navigation
   document.querySelectorAll(".mobile-nav-link").forEach((link) => {
-    link.classList.remove("bg-blue-600", "text-white", "shadow-lg");
-    link.classList.add("text-gray-600");
+    link.classList.remove("bg-gray-700", "text-white");
+    link.classList.add("text-gray-400");
     if (link.dataset.page === activePage) {
-      link.classList.remove("text-gray-600");
-      link.classList.add("bg-blue-600", "text-white", "shadow-lg");
+      link.classList.remove("text-gray-400");
+      link.classList.add("bg-gray-700", "text-white");
     }
   });
 }
 
 // Music player functions
 function togglePlayPause() {
-  isPlaying = !isPlaying;
+  const audio = document.getElementById("preview-audio");
   const btn = document.getElementById("play-pause-btn");
   const icon = btn.querySelector("i");
 
-  if (isPlaying) {
-    icon.setAttribute("data-lucide", "pause");
+  if (audio) {
+    if (isPlaying) {
+      audio.pause();
+      isPlaying = false;
+      icon.setAttribute("data-lucide", "play");
+    } else {
+      audio.play();
+      isPlaying = true;
+      icon.setAttribute("data-lucide", "pause");
+    }
   } else {
-    icon.setAttribute("data-lucide", "play");
+    // Play current track preview
+    const currentTrackData = playlist[currentTrack];
+    if (currentTrackData) {
+      playPreview(currentTrackData);
+    }
   }
 
   lucide.createIcons();
@@ -272,6 +377,45 @@ function renderPlaylist() {
 function selectTrack(index) {
   currentTrack = index;
   updateCurrentTrack();
+
+  // Auto-play preview if available
+  const track = playlist[currentTrack];
+  if (track && track.preview_url) {
+    playPreview(track);
+  }
+}
+
+function playPreview(track) {
+  if (track.preview_url) {
+    // Stop any currently playing audio
+    const existingAudio = document.getElementById("preview-audio");
+    if (existingAudio) {
+      existingAudio.pause();
+      existingAudio.remove();
+    }
+
+    // Create and play new audio
+    const audio = document.createElement("audio");
+    audio.id = "preview-audio";
+    audio.src = track.preview_url;
+    audio.volume = 0.5;
+    audio.play();
+
+    // Update UI
+    isPlaying = true;
+    const btn = document.getElementById("play-pause-btn");
+    const icon = btn.querySelector("i");
+    icon.setAttribute("data-lucide", "pause");
+    lucide.createIcons();
+
+    // Auto-pause after 30 seconds (Spotify preview length)
+    setTimeout(() => {
+      audio.pause();
+      isPlaying = false;
+      icon.setAttribute("data-lucide", "play");
+      lucide.createIcons();
+    }, 30000);
+  }
 }
 
 // Journal functions
@@ -550,28 +694,44 @@ function renderAssignments() {
 
 function renderNotionPages() {
   const container = document.getElementById("notion-pages");
-  container.innerHTML =
-    notionPages
-      .map(
-        (page) => `
-        <a href="${
-          page.url
-        }" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
+
+  if (notionPages.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-8">
+        <i data-lucide="file-text" class="mx-auto text-gray-400 mb-4 w-12 h-12"></i>
+        <h3 class="text-lg font-medium text-gray-600 mb-2">No Notion pages found</h3>
+        <p class="text-gray-500 mb-4">Configure your Notion integration to see your pages here</p>
+        <button onclick="showNotionSetup()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          Setup Notion
+        </button>
+      </div>
+    `;
+  } else {
+    container.innerHTML =
+      notionPages
+        .slice(0, 10)
+        .map(
+          (page) => `
+          <a href="${getNotionPageUrl(
+            page
+          )}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group">
             <div class="flex items-center gap-3">
-                <span class="text-2xl">${page.icon || "📄"}</span>
+                <span class="text-2xl">${getNotionPageIcon(page)}</span>
                 <div>
-                    <h3 class="font-medium text-gray-800">${page.title}</h3>
+                    <h3 class="font-medium text-gray-800">${getNotionPageTitle(
+                      page
+                    )}</h3>
                     <p class="text-sm text-gray-500">Last edited ${formatDate(
                       page.last_edited_time
                     )}</p>
                 </div>
             </div>
             <i data-lucide="external-link" class="text-gray-400 group-hover:text-gray-600 transition-colors w-4.5 h-4.5"></i>
-        </a>
-    `
-      )
-      .join("") +
-    `
+          </a>
+      `
+        )
+        .join("") +
+      `
         <div class="border-t border-gray-200 pt-4 mt-6">
             <a href="https://notion.so" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium">
                 <i data-lucide="file-text" class="w-4 h-4"></i>
@@ -580,12 +740,13 @@ function renderNotionPages() {
             </a>
         </div>
     `;
+  }
 
   lucide.createIcons();
 }
 
 function fetchNotionPages() {
-  // Simulate API call
+  // Refresh Notion pages
   const container = document.getElementById("notion-pages");
   container.innerHTML = `
         <div class="text-center py-8">
@@ -594,27 +755,28 @@ function fetchNotionPages() {
         </div>
     `;
 
-  setTimeout(() => {
-    renderNotionPages();
-  }, 1000);
+  initializeNotion()
+    .then(() => {
+      renderNotionPages();
+    })
+    .catch(() => {
+      showNotionError();
+    });
 }
 
 // GitHub integration
-async function fetchGitHubRepos() {
+function updateGitHubUI() {
   const container = document.getElementById("github-repos");
 
-  try {
-    const response = await fetch(
-      "https://api.github.com/users/octocat/repos?sort=updated&per_page=6"
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch repositories");
-    }
-
-    const repos = await response.json();
-
-    container.innerHTML = repos
+  if (githubRepos.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-4">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+        <p class="text-gray-500 mt-2">Loading repositories...</p>
+      </div>
+    `;
+  } else {
+    container.innerHTML = githubRepos
       .slice(0, 3)
       .map(
         (repo) => `
@@ -635,18 +797,101 @@ async function fetchGitHubRepos() {
         `
       )
       .join("");
-
-    // Update repo count
-    document.getElementById("repos-count").textContent =
-      repos.length.toString();
-  } catch (error) {
-    container.innerHTML = `
-            <div class="text-center py-4">
-                <p class="text-red-600 mb-2">Failed to load repositories</p>
-                <button onclick="fetchGitHubRepos()" class="text-blue-600 hover:text-blue-700 text-sm">Try again</button>
-            </div>
-        `;
   }
+}
+
+async function fetchGitHubRepos() {
+  try {
+    await initializeGitHub();
+  } catch (error) {
+    showGitHubError();
+  }
+}
+
+function showGitHubError() {
+  const container = document.getElementById("github-repos");
+  container.innerHTML = `
+    <div class="text-center py-4">
+      <p class="text-red-600 mb-2">Failed to load repositories</p>
+      <p class="text-gray-500 text-sm mb-3">Check your GitHub configuration</p>
+      <button onclick="fetchGitHubRepos()" class="text-blue-600 hover:text-blue-700 text-sm">Try again</button>
+    </div>
+  `;
+}
+
+function showNotionError() {
+  const container = document.getElementById("notion-pages");
+  container.innerHTML = `
+    <div class="text-center py-8">
+      <i data-lucide="alert-circle" class="mx-auto text-red-400 mb-4 w-12 h-12"></i>
+      <h3 class="text-lg font-medium text-red-600 mb-2">Notion Connection Failed</h3>
+      <p class="text-gray-500 mb-4">Check your Notion integration token</p>
+      <button onclick="fetchNotionPages()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+        Retry Connection
+      </button>
+    </div>
+  `;
+  lucide.createIcons();
+}
+
+function showNotionSetupMessage() {
+  const container = document.getElementById("notion-pages");
+  container.innerHTML = `
+    <div class="text-center py-8">
+      <i data-lucide="settings" class="mx-auto text-gray-400 mb-4 w-12 h-12"></i>
+      <h3 class="text-lg font-medium text-gray-600 mb-2">Notion Not Configured</h3>
+      <p class="text-gray-500 mb-4">Add your Notion integration token to see your pages</p>
+      <button onclick="showNotionSetup()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+        Setup Guide
+      </button>
+    </div>
+  `;
+  lucide.createIcons();
+}
+
+function showMusicSetupMessage() {
+  // Update music page to show setup message
+  console.log("Music services not configured. Using default playlist.");
+}
+
+function showMusicError() {
+  console.error("Music service connection failed. Using default playlist.");
+}
+
+function showNotionSetup() {
+  alert(
+    "Please check the setup-guide.md file for instructions on configuring Notion integration."
+  );
+}
+
+// Utility functions for Notion API
+function getNotionPageTitle(page) {
+  if (page.properties && page.properties.title) {
+    return page.properties.title.title[0]?.plain_text || "Untitled";
+  }
+  return page.title || "Untitled";
+}
+
+function getNotionPageIcon(page) {
+  if (page.icon) {
+    if (page.icon.type === "emoji") {
+      return page.icon.emoji;
+    } else if (page.icon.type === "external") {
+      return "🔗";
+    }
+  }
+  return "📄";
+}
+
+function getNotionPageUrl(page) {
+  return page.url || `https://notion.so/${page.id.replace(/-/g, "")}`;
+}
+
+// Music utility functions
+function formatDuration(ms) {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
 // Event listeners

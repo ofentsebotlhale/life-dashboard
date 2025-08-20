@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Dashboard</title>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="config.js"></script>
+    <script src="api.js"></script>
     <link rel="stylesheet" href="output.css" />
     <style>
       /* Custom slider styles */
@@ -72,10 +74,6 @@
           opacity: 1;
           transform: translateY(0);
         }
-      }
-
-      .scale-hover:hover {
-        transform: scale(1.05);
       }
     </style>
   </head>
@@ -149,23 +147,24 @@
 
     <!-- 📱 Mobile Header -->
     <header
-      class="sm:hidden flex items-center justify-center py-3 px-4 bg-gray-900/95 text-gray-200 fixed top-0 w-full z-50 shadow-lg backdrop-blur-md"
+      class="sm:hidden flex items-center justify-center py-3 px-4 bg-gray-200/50 fixed top-0 w-full backdrop-blur-md z-50"
     >
       <nav
-        class="flex items-center justify-center gap-2 p-2 rounded-2xl bg-gray-800/80 backdrop-blur-sm shadow-md"
+        class="flex items-center justify-center gap-3 p-2 rounded-2xl bg-gray-200/50 backdrop-blur-md"
       >
         <a
           href="#"
           onclick="showPage('music')"
-          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-400 hover:bg-gray-700 hover:text-white"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
           data-page="music"
         >
-          <i data-lucide="music" class="w-6 h-6"></i>
+          <i data-lucide="music" class="w-6 h-6 stroke-current"></i>
         </a>
+
         <a
           href="#"
           onclick="showPage('poetry')"
-          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-400 hover:bg-gray-700 hover:text-white"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
           data-page="poetry"
         >
           <i data-lucide="pen-tool" class="w-6 h-6"></i>
@@ -181,7 +180,7 @@
         <a
           href="#"
           onclick="showPage('journal')"
-          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-400 hover:bg-gray-700 hover:text-white"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
           data-page="journal"
         >
           <i data-lucide="book-open" class="w-6 h-6"></i>
@@ -189,7 +188,7 @@
         <a
           href="#"
           onclick="showPage('school')"
-          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 text-gray-400 hover:bg-gray-700 hover:text-white"
+          class="mobile-nav-link p-2 rounded-xl transition-all duration-200 hover:bg-gray-700 hover:text-white"
           data-page="school"
         >
           <i data-lucide="graduation-cap" class="w-6 h-6"></i>
@@ -261,7 +260,7 @@
           <a
             href="#"
             onclick="showPage('music')"
-            class="bg-purple-600 hover:bg-purple-500 text-white rounded-2xl p-6 flex flex-col items-center text-center scale-hover transition-all duration-200 shadow-lg group"
+            class="bg-purple-600 hover:bg-purple-500 text-white rounded-2xl p-6 flex flex-col items-center text-center hover:scale-105 transition-all duration-200 shadow-lg group"
           >
             <i
               data-lucide="music"
@@ -276,7 +275,7 @@
           <a
             href="#"
             onclick="showPage('journal')"
-            class="bg-blue-600 hover:bg-blue-500 text-white rounded-2xl p-6 flex flex-col items-center text-center scale-hover transition-all duration-200 shadow-lg group"
+            class="bg-blue-600 hover:bg-blue-500 text-white rounded-2xl p-6 flex flex-col items-center text-center hover:scale-105 transition-all duration-200 shadow-lg group"
           >
             <i
               data-lucide="book-open"
@@ -291,7 +290,7 @@
           <a
             href="#"
             onclick="showPage('poetry')"
-            class="bg-green-600 hover:bg-green-500 text-white rounded-2xl p-6 flex flex-col items-center text-center scale-hover transition-all duration-200 shadow-lg group"
+            class="bg-green-600 hover:bg-green-500 text-white rounded-2xl p-6 flex flex-col items-center text-center hover:scale-105 transition-all duration-200 shadow-lg group"
           >
             <i
               data-lucide="pen-tool"
@@ -306,7 +305,7 @@
           <a
             href="#"
             onclick="showPage('school')"
-            class="bg-orange-600 hover:bg-orange-500 text-white rounded-2xl p-6 flex flex-col items-center text-center scale-hover transition-all duration-200 shadow-lg group"
+            class="bg-orange-600 hover:bg-orange-500 text-white rounded-2xl p-6 flex flex-col items-center text-center hover:scale-105 transition-all duration-200 shadow-lg group"
           >
             <i
               data-lucide="graduation-cap"
@@ -637,7 +636,12 @@
             </div>
 
             <div id="notion-pages" class="space-y-3">
-              <!-- Notion pages will be populated by JavaScript -->
+              <div class="text-center py-8">
+                <div
+                  class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"
+                ></div>
+                <p class="text-gray-500 mt-2">Loading Notion pages...</p>
+              </div>
             </div>
           </div>
 
