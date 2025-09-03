@@ -192,7 +192,7 @@
       <!-- Navigation (Centered) -->
       <div class="flex-1 flex justify-center">
         <nav
-          class="flex flex-wrap justify-center gap-2 bg-dark-800/50 rounded-2xl p-2 max-w-[90%] md:max-w-[70%]"
+          class="flex flex-nowrap justify-center gap-2 bg-dark-800/50 rounded-2xl p-2 max-w-[90%] md:max-w-[70%] overflow-x-auto"
         >
           <a
             href="#"
@@ -239,18 +239,32 @@
       </div>
 
       <!-- User Profile -->
-      <div class="flex items-center gap-3 bg-dark-800/50 rounded-xl px-3 py-2">
+      <!-- User Profile / Login -->
+      <div class="flex items-center gap-3">
+        <!-- Avatar -->
         <div
           class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center"
         >
           <i data-lucide="user" class="w-4 h-4 text-white"></i>
         </div>
+
+        <!-- Username -->
         <span class="font-medium text-gray-300 user-name">Guest</span>
+
+        <!-- Logout Button -->
         <button
           id="logoutBtn"
-          class="ml-2 text-sm text-red-400 hover:text-red-300 hidden"
+          class="ml-2 text-sm text-red-400 hover:text-red-300 hidden transition-colors"
         >
           Logout
+        </button>
+
+        <!-- Login Button -->
+        <button
+          id="loginPromptBtn"
+          class="ml-2 text-sm text-blue-400 hover:text-blue-300 transition-colors"
+        >
+          Login
         </button>
       </div>
     </header>
